@@ -13,8 +13,7 @@ namespace Bindings
         private AnimatorControllerParameter[] _animParameters;
         private string[] _animParameterNames;
 
-        private Stream[] _streams;
-        private string[] _streamNames;
+        private StreamsProperty<Stream> _streams;
 
         private void OnEnable()
         {
@@ -23,9 +22,8 @@ namespace Bindings
             _animParameters = applicator.GetComponent<Animator>().parameters;
             _animParameterNames = System.Array.ConvertAll(_animParameters, p => string.Format("{0} ({1})", p.name, p.type));
 
-            _streams = applicator.GetComponentsInParent<Stream>();
-            _streamNames = System.Array.ConvertAll(_streams, s => string.Format("{0} :: {1} ({2})", s.name, s.Name, ObjectNames.NicifyVariableName(s.GetType().Name)));
-            
+            _streams = new StreamsProperty<Stream>(applicator);
+
             _parameters = new ListProperty(serializedObject.FindProperty("_parameters"));
             _parameters.DrawElement += OnDrawElement;
         }
@@ -45,15 +43,7 @@ namespace Bindings
 
         private void OnDrawElement(SerializedProperty element)
         {
-            var itemStream = element.FindPropertyRelative("_stream");
-
-            int streamIndex = System.Array.FindIndex(_streams, s => s == itemStream.objectReferenceValue);
-            int newStreamIndex = Mathf.Max(0, EditorGUILayout.Popup(streamIndex, _streamNames));
-
-            if (newStreamIndex != streamIndex)
-            {
-                itemStream.objectReferenceValue = _streams[newStreamIndex];
-            }
+            _streams.DrawLayout(element.FindPropertyRelative("_stream"));
 
             var itemParameter = element.FindPropertyRelative("_name");
 

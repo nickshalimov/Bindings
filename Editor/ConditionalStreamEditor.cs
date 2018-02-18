@@ -8,15 +8,13 @@ namespace Bindings
     public class ConditionalStreamEditor: Editor
     {
         private ListProperty _conditions;
-        private ValueStream[] _streams;
-        private string[] _streamNames;
+        private StreamsProperty<ValueStream> _streams;
 
         private void OnEnable()
         {
             var stream = target as ConditionalStream;
 
-            _streams = stream.GetComponentsInParent<ValueStream>();
-            _streamNames = System.Array.ConvertAll(_streams, s => string.Format("{0} :: {1} ({2})", s.name, s.Name, ObjectNames.NicifyVariableName(s.GetType().Name)));
+            _streams = new StreamsProperty<ValueStream>(stream.transform.parent);
 
             _conditions = new ListProperty(serializedObject.FindProperty("_conditions"));
             _conditions.DrawElement += OnDrawElement;
@@ -37,19 +35,7 @@ namespace Bindings
 
         private void OnDrawElement(SerializedProperty element)
         {
-            var elementStream = element.FindPropertyRelative("_stream");
-
-            int streamIndex = System.Array.FindIndex(_streams, s => s == elementStream.objectReferenceValue);
-            int newStreamIndex = Mathf.Max(
-                0,
-                EditorGUILayout.Popup(streamIndex, _streamNames, GUILayout.Width(EditorGUIUtility.currentViewWidth * 0.5f))
-            );
-
-            var stream = _streams[newStreamIndex];
-            if (newStreamIndex != streamIndex)
-            {
-                elementStream.objectReferenceValue = stream;
-            }
+            var stream = _streams.DrawLayout(element.FindPropertyRelative("_stream"));
 
             var elementInverse = element.FindPropertyRelative("_inverse");
 

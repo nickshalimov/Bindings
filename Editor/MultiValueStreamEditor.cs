@@ -10,8 +10,7 @@ namespace Bindings
     public class MultiValueStreamEditor: Editor
     {
         private ListProperty _streamsProperty;
-        private ValueStream[] _streams;
-        private string[] _streamNames;
+        private StreamsProperty<ValueStream> _streams;
 
         private void OnEnable()
         {
@@ -23,8 +22,7 @@ namespace Bindings
                 return;
             }
 
-            _streams = binding.transform.parent.GetComponentsInParent<ValueStream>();
-            _streamNames = System.Array.ConvertAll(_streams, s => s.name + " :: " + s.Name);
+            _streams = new StreamsProperty<ValueStream>(binding.transform.parent);
 
             _streamsProperty = new ListProperty(serializedObject.FindProperty("_valueStreams"));
             _streamsProperty.DrawElement += OnDrawElement;
@@ -55,12 +53,7 @@ namespace Bindings
 
         private void OnDrawElement(SerializedProperty element)
         {
-            int streamIndex = System.Array.FindIndex(_streams, s => s == element.objectReferenceValue);
-            int newStreamIndex = EditorGUILayout.Popup(streamIndex, _streamNames);
-            if (newStreamIndex != streamIndex)
-            {
-                element.objectReferenceValue = newStreamIndex >= 0 ? _streams[newStreamIndex] : null;
-            }
+            _streams.DrawLayout(element);
         }
     }
 }
