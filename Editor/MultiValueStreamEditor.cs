@@ -10,7 +10,7 @@ namespace Bindings
     public class MultiValueStreamEditor: Editor
     {
         private ListProperty _streamsProperty;
-        private StreamsProperty<ValueStream> _streams;
+        private StreamsProperty _streams;
 
         private void OnEnable()
         {
@@ -22,7 +22,7 @@ namespace Bindings
                 return;
             }
 
-            _streams = new StreamsProperty<ValueStream>(binding.transform.parent);
+            _streams = new StreamsProperty(binding.transform.parent, typeof(ValueStream));
 
             _streamsProperty = new ListProperty(serializedObject.FindProperty("_valueStreams"));
             _streamsProperty.DrawElement += OnDrawElement;

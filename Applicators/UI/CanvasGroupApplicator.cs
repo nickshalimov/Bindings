@@ -1,24 +1,26 @@
-﻿using UnityEngine;
+﻿using Bindings.Streams;
+using UnityEngine;
 
 namespace Bindings.Applicators.UI
 {
-    public class CanvasGroupApplicator: Applicator
+    public class CanvasGroupApplicator: PropertiesApplicator
     {
-        private CanvasGroup _canvasGroup;
+        [SerializeField] private FloatPropertyApplicator _alpha;
+        [SerializeField] private BoolPropertyApplicator _interactable;
 
-        private void Awake()
+        protected override PropertyApplicator[] GetProperties()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
-        }
+            var canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                return null;
+            }
 
-        protected override void OnBind()
-        {
-            
-        }
-
-        protected override void OnUnbind()
-        {
-            
+            return new PropertyApplicator[]
+            {
+                _alpha.WithAction(v => canvasGroup.alpha = v),
+                _interactable.WithAction(v => canvasGroup.interactable = v)
+            };
         }
     }
 }

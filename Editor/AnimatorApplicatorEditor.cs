@@ -13,16 +13,21 @@ namespace Bindings
         private AnimatorControllerParameter[] _animParameters;
         private string[] _animParameterNames;
 
-        private StreamsProperty<Stream> _streams;
+        private StreamsProperty _streams;
 
         private void OnEnable()
         {
             var applicator = target as AnimatorApplicator;
 
+            if (applicator == null)
+            {
+                return;
+            }
+
             _animParameters = applicator.GetComponent<Animator>().parameters;
             _animParameterNames = System.Array.ConvertAll(_animParameters, p => string.Format("{0} ({1})", p.name, p.type));
 
-            _streams = new StreamsProperty<Stream>(applicator);
+            _streams = new StreamsProperty(applicator, typeof(Stream));
 
             _parameters = new ListProperty(serializedObject.FindProperty("_parameters"));
             _parameters.DrawElement += OnDrawElement;
@@ -36,9 +41,12 @@ namespace Bindings
 
         public override void OnInspectorGUI()
         {
-            serializedObject.Update();
-            _parameters.DrawLayout();
-            serializedObject.ApplyModifiedProperties();
+            if (_parameters != null)
+            {
+                serializedObject.Update();
+                _parameters.DrawLayout();
+                serializedObject.ApplyModifiedProperties();
+            }
         }
 
         private void OnDrawElement(SerializedProperty element)
