@@ -1,29 +1,52 @@
-﻿using UnityEngine;
+﻿using Bindings.Expressions;
+using UnityEngine;
 
 namespace Bindings.Applicators
 {
-    public class ActivityApplicator: BooleanApplicator
+    public class ActivityApplicator: Applicator
     {
-        [SerializeField] private GameObject _targetGameObject;
+        [SerializeField] private Entry[] _entries = {};
 
-        protected override void Apply(bool value)
+        protected override void OnBind()
         {
-            if (_targetGameObject != null)
+            for (int i = 0, count = _entries.Length; i < count; ++i)
             {
-                _targetGameObject.SetActive(value);
+                _entries[i].Bind();
             }
         }
 
-        private void OnValidate()
+        protected override void OnUnbind()
         {
-            if (_targetGameObject == null)
+            for (int i = 0, count = _entries.Length; i < count; ++i)
             {
-                return;
+                _entries[i].Unbind();
             }
-            
-            if (_targetGameObject.transform == transform || transform.IsChildOf(_targetGameObject.transform))
+        }
+
+        [System.Serializable]
+        private class Entry
+        {
+            [SerializeField] private ConditionalExpression _expression;
+            [SerializeField] private GameObject _target;
+
+            public void Bind()
             {
-                _targetGameObject = null;
+                _expression.Next += OnNext;
+                _expression.Bind();
+            }
+
+            public void Unbind()
+            {
+                _expression.Next -= OnNext;
+                _expression.Unbind();
+            }
+
+            private void OnNext()
+            {
+                if (_target != null)
+                {
+                    _target.SetActive(_expression.GetValue());
+                }
             }
         }
     }

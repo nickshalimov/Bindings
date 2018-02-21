@@ -29,14 +29,19 @@ namespace Bindings
 
             _streams = new StreamsProperty(applicator, typeof(Stream));
 
-            _parameters = new ListProperty(serializedObject.FindProperty("_parameters"));
-            _parameters.DrawElement += OnDrawElement;
+            _parameters = new ListProperty(serializedObject.FindProperty("_parameters"))
+            {
+                DrawElementLine = OnDrawElement
+            };
         }
 
         private void OnDisable()
         {
-            _parameters.DrawElement -= OnDrawElement;
-            _parameters.Destroy();
+            if (_parameters != null)
+            {
+                _parameters.Destroy();
+                _parameters = null;
+            }
         }
 
         public override void OnInspectorGUI()
@@ -49,18 +54,28 @@ namespace Bindings
             }
         }
 
-        private void OnDrawElement(SerializedProperty element)
+        private void OnDrawElement(int line, Rect position, SerializedProperty element)
         {
-            _streams.DrawLayout(element.FindPropertyRelative("_stream"));
+            var rect = new Rect(position) { width = 0.5f * (position.width - EditorGUIUtility.standardVerticalSpacing) };
+
+            _streams.Draw(element.FindPropertyRelative("_stream"), rect);
 
             var itemParameter = element.FindPropertyRelative("_name");
 
-            int paramIndex = System.Array.FindIndex(_animParameterNames, p => p == itemParameter.stringValue);
-            int newParamIndex = Mathf.Max(0, EditorGUILayout.Popup(paramIndex, _animParameterNames));
+            rect.x += rect.width + EditorGUIUtility.standardVerticalSpacing;
+
+            int paramIndex = System.Array.FindIndex(_animParameters, p => p.name == itemParameter.stringValue);
+            int newParamIndex = Mathf.Max(
+                0,
+                EditorGUI.Popup(
+                    rect,
+                    paramIndex,
+                    _animParameterNames)
+            );
 
             if (newParamIndex != paramIndex)
             {
-                itemParameter.stringValue = _animParameterNames[newParamIndex];
+                itemParameter.stringValue = _animParameters[newParamIndex].name;
             }
         }
     }

@@ -7,16 +7,28 @@ namespace Bindings
     public class ListProperty
     {
         public delegate void DrawElementCallback(SerializedProperty element);
+        public delegate void DrawElementLineCallback(int line, Rect position, SerializedProperty element);
 
         private readonly ReorderableList _list;
         private float _elementWidth;
         
         public event DrawElementCallback DrawElement;
+        public event DrawElementCallback DrawHeader;
+        
+        public DrawElementLineCallback DrawElementLine;
 
-        public float ElementHeight
+        private int _linesCount = 1;
+
+        public int LinesCount
         {
-            get { return _list.elementHeight; }
-            set { _list.elementHeight = value; }
+            get { return _linesCount; }
+            set
+            {
+                _linesCount = value < 1 ? 1 : value;
+                _list.elementHeight =
+                    _linesCount * EditorGUIUtility.singleLineHeight +
+                    EditorGUIUtility.standardVerticalSpacing * (_linesCount + 2);
+            }
         }
 
         public ListProperty(SerializedProperty property)
@@ -35,6 +47,7 @@ namespace Bindings
         {
             _list.drawHeaderCallback = null;
             _list.drawElementCallback = null;
+            DrawElementLine = null;
         }
 
         private void OnDrawHeader(Rect rect)
@@ -44,6 +57,23 @@ namespace Bindings
 
         private void OnDrawElement(Rect rect, int index, bool isActive, bool isFocused)
         {
+            if (DrawElementLine != null)
+            {
+                var property = _list.serializedProperty.GetArrayElementAtIndex(index);
+                for (int i = 0; i < _linesCount; ++i)
+                {
+                    var pos = new Rect(rect)
+                    {
+                        y = rect.y + EditorGUIUtility.standardVerticalSpacing + (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * i,
+                        height = EditorGUIUtility.singleLineHeight
+                    };
+
+                    DrawElementLine(i, pos, property);
+                }
+
+                return;
+            }
+
             var offset = Vector2.one * 2.0f;
             var position = new Rect(offset, rect.size);
 

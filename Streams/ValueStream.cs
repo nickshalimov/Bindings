@@ -1,11 +1,7 @@
-﻿namespace Bindings.Streams
-{
-    public enum Condition
-    {
-        Equals,
-        Greater
-    }
+﻿using Bindings.Expressions;
 
+namespace Bindings.Streams
+{
     public abstract class ValueStream: Stream
     {
         public abstract bool EvaluateCondition(Condition condition, ValueStream stream);
