@@ -2,7 +2,7 @@
 
 namespace Bindings.Streams
 {
-    public class BooleanStream: ValueStream, IValueReader<bool>
+    public class BooleanStream: ValueStream, IValueReaderStream<bool>
     {
         [SerializeField] private bool _value;
 

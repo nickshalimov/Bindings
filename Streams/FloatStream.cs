@@ -2,7 +2,7 @@
 
 namespace Bindings.Streams
 {
-    public class FloatStream: ValueStream, IValueReader<float>
+    public class FloatStream: ValueStream, IValueReaderStream<float>
     {
         [SerializeField] private float _value;
 

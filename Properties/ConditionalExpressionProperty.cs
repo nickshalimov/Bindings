@@ -10,7 +10,7 @@ namespace Bindings.Properties
     }
 
     [System.Serializable]
-    public sealed class ConditionalExpressionProperty: Property, IValueReader<bool>
+    public sealed class ConditionalExpressionProperty: Property, IValueReaderStream<bool>
     {
         [SerializeField] private ValueStream _stream;
 
@@ -29,7 +29,7 @@ namespace Bindings.Properties
             return _value;
         }
 
-        protected override void OnBind()
+        protected override void Bind()
         {
             if (_stream == null)
             {
@@ -46,7 +46,7 @@ namespace Bindings.Properties
             OnNext();
         }
 
-        protected override void OnUnbind()
+        protected override void Unbind()
         {
             if (_stream != null)
             {

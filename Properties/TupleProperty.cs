@@ -8,14 +8,12 @@ namespace Bindings.Properties
     {
         [SerializeField] private ValueStream[] _items = {};
 
-        private event System.Action _next;
-
         public T[] ConvertAll<T>(System.Converter<ValueStream, T> converter)
         {
             return System.Array.ConvertAll(_items, converter);
         }
 
-        protected override void OnBind()
+        protected override void Bind()
         {
             for (int i = 0, count = _items.Length; i < count; ++i)
             {
@@ -23,7 +21,7 @@ namespace Bindings.Properties
             }
         }
 
-        protected override void OnUnbind()
+        protected override void Unbind()
         {
             for (int i = 0, count = _items.Length; i < count; ++i)
             {

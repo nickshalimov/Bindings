@@ -1,23 +1,17 @@
-﻿using Bindings.Streams;
+﻿using Bindings.Properties;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Bindings.Applicators.UI
 {
-    public class SelectableApplicator: PropertiesApplicator
+    public class SelectableApplicator: CustomApplicator
     {
-        [SerializeField] private BoolPropertyApplicator _interactable;
+        [SerializeField] private ConditionalProperty _interactable;
 
-        protected override PropertyApplicator[] GetProperties()
+        protected override void BindProperties()
         {
             var selectable = GetComponent<Selectable>();
-
-            return selectable == null
-                ? null
-                : new PropertyApplicator[]
-                {
-                    _interactable.WithAction(v => selectable.interactable = v)
-                };
+            BindProperty(_interactable, v => selectable.interactable = v);
         }
     }
 }

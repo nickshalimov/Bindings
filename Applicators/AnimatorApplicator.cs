@@ -14,7 +14,7 @@ namespace Bindings.Applicators
             _animator = GetComponent<Animator>();
         }
 
-        protected override void OnBind()
+        protected override void Bind()
         {
             for (int i = 0, count = _parameters.Length; i < count; ++i)
             { 
@@ -22,7 +22,7 @@ namespace Bindings.Applicators
             }
         }
 
-        protected override void OnUnbind()
+        protected override void Unbind()
         {
             for (int i = 0, count = _parameters.Length; i < count; ++i)
             { 

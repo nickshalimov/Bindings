@@ -6,15 +6,15 @@ namespace Bindings.Applicators
     {
         private void OnEnable()
         {
-            OnBind();
+            Bind();
         }
 
         private void OnDisable()
         {
-            OnUnbind();
+            Unbind();
         }
 
-        protected abstract void OnBind();
-        protected abstract void OnUnbind();
+        protected abstract void Bind();
+        protected abstract void Unbind();
     }
 }

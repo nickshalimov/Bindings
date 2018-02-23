@@ -2,7 +2,7 @@
 
 namespace Bindings.Streams
 {
-    public class StringStream: ValueStream, IValueReader<string>
+    public class StringStream: ValueStream, IValueReaderStream<string>
     {
         [SerializeField] private string _value;
 

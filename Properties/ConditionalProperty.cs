@@ -3,7 +3,7 @@
 namespace Bindings.Properties
 {
     [System.Serializable]
-    public class ConditionalProperty: Property, IValueReader<bool>
+    public class ConditionalProperty: Property, IValueReaderStream<bool>
     {
         [SerializeField] private ConditionalExpressionProperty[] _expressions = {};
         [SerializeField] private bool _any;
@@ -15,7 +15,7 @@ namespace Bindings.Properties
             return _value;
         }
 
-        protected override void OnBind()
+        protected override void Bind()
         {
             for (int i = 0, count = _expressions.Length; i < count; ++i)
             {
@@ -25,7 +25,7 @@ namespace Bindings.Properties
             OnNext();
         }
 
-        protected override void OnUnbind()
+        protected override void Unbind()
         {
             for (int i = 0, count = _expressions.Length; i < count; ++i)
             {

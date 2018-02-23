@@ -1,20 +1,17 @@
-﻿using UnityEngine;
+﻿using Bindings.Streams;
+using UnityEngine;
 
 namespace Bindings.Applicators.UI
 {
     [RequireComponent(typeof(UnityEngine.UI.Text))]
-    public class TextApplicator: StringApplicator
+    public class TextApplicator: CustomApplicator
     {
-        private UnityEngine.UI.Text _textField;
+        [SerializeField] private StringStream _text;
 
-        protected override void Apply(string value)
+        protected override void BindProperties()
         {
-            _textField = _textField ?? GetComponent<UnityEngine.UI.Text>();
-
-            if (_textField != null)
-            {
-                _textField.text = value;
-            }
+            var textField = GetComponent<UnityEngine.UI.Text>();
+            BindProperty(_text, v => textField.text = v);
         }
     }
 }

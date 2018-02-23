@@ -1,26 +1,24 @@
-﻿using Bindings.Streams;
+﻿using Bindings.Properties;
+using Bindings.Streams;
 using UnityEngine;
 
 namespace Bindings.Applicators.UI
 {
-    public class CanvasGroupApplicator: PropertiesApplicator
+    public class CanvasGroupApplicator: CustomApplicator
     {
-        [SerializeField] private FloatPropertyApplicator _alpha;
-        [SerializeField] private BoolPropertyApplicator _interactable;
+        [SerializeField] private FloatStream _alpha;
+        [SerializeField] private ConditionalProperty _interactable;
 
-        protected override PropertyApplicator[] GetProperties()
+        protected override void BindProperties()
         {
             var canvasGroup = GetComponent<CanvasGroup>();
             if (canvasGroup == null)
             {
-                return null;
+                return;
             }
 
-            return new PropertyApplicator[]
-            {
-                _alpha.WithAction(v => canvasGroup.alpha = v),
-                _interactable.WithAction(v => canvasGroup.interactable = v)
-            };
+            BindProperty(_alpha, v => canvasGroup.alpha = v);
+            BindProperty(_interactable, v => canvasGroup.interactable = v);
         }
     }
 }

@@ -8,7 +8,7 @@
             {
                 if (_next == null)
                 {
-                    OnBind();
+                    Bind();
                 }
 
                 _next += value;
@@ -20,15 +20,15 @@
 
                 if (_next == null)
                 {
-                    OnUnbind();
+                    Unbind();
                 }
             }
         }
 
         private event System.Action _next;
 
-        protected abstract void OnBind();
-        protected abstract void OnUnbind();
+        protected abstract void Bind();
+        protected abstract void Unbind();
 
         protected void NotifyNext()
         {
