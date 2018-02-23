@@ -1,12 +1,12 @@
-﻿using Bindings.Streams;
+﻿using Bindings.Properties;
+using Bindings.Streams;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 
 namespace Bindings
 {
-    [CustomPropertyDrawer(typeof(TupleStream))]
-    public class TupleStreamDrawer: PropertyDrawer
+    [CustomPropertyDrawer(typeof(TupleProperty))]
+    public class TuplePropertyDrawer: PropertyDrawer
     {
         private SerializedProperty _property;
         private ListProperty _streamsProperty;

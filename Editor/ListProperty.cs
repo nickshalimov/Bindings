@@ -6,26 +6,27 @@ namespace Bindings
 {
     public class ListProperty
     {
-        public delegate void DrawElementCallback(SerializedProperty element);
+        public delegate void DrawElementCallback(Rect position);
         public delegate void DrawElementLineCallback(int line, Rect position, SerializedProperty element);
         public delegate void ChangedCallback();
 
         private readonly ReorderableList _list;
         private float _elementWidth;
-        
-        public event DrawElementCallback DrawElement;
-        public event DrawElementCallback DrawHeader;
+
+        public DrawElementCallback DrawHeader;
 
         public DrawElementLineCallback DrawElementLine;
         public ChangedCallback Changed;
 
-        protected SerializedProperty _property;
+        private SerializedProperty _property;
         private int _linesCount = 1;
 
         public SerializedProperty Property
         {
             get { return _property; }
         }
+
+        public string DisplayName { get; set; }
 
         public int LinesCount
         {
@@ -54,6 +55,8 @@ namespace Bindings
                 true, false, true, true
             );
 
+            DisplayName = _list.serializedProperty.displayName;
+
             _list.drawHeaderCallback = OnDrawHeader;
             _list.drawElementCallback = OnDrawElement;
             _list.onChangedCallback = OnChanged;
@@ -69,52 +72,32 @@ namespace Bindings
 
         private void OnDrawHeader(Rect rect)
         {
-            EditorGUI.LabelField(rect, _list.serializedProperty.displayName);
+            //EditorGUI.LabelField(rect, DisplayName);
+            rect = EditorGUI.PrefixLabel(rect, new GUIContent(DisplayName));
+
+            if (DrawHeader != null)
+            {
+                DrawHeader(rect);
+            }
         }
 
         private void OnDrawElement(Rect rect, int index, bool isActive, bool isFocused)
         {
-            if (DrawElementLine != null)
+            if (DrawElementLine == null)
             {
-                var property = _list.serializedProperty.GetArrayElementAtIndex(index);
-                for (int i = 0; i < _linesCount; ++i)
-                {
-                    var pos = new Rect(rect)
-                    {
-                        y = rect.y + EditorGUIUtility.standardVerticalSpacing + (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * i,
-                        height = EditorGUIUtility.singleLineHeight
-                    };
-
-                    DrawElementLine(i, pos, property);
-                }
-
                 return;
             }
 
-            var offset = Vector2.one * 2.0f;
-            var position = new Rect(offset, rect.size);
-
-            // UGLY but works
-            if (position.width < 0.0f)
+            var property = _list.serializedProperty.GetArrayElementAtIndex(index);
+            for (int i = 0; i < _linesCount; ++i)
             {
-                position.width = _elementWidth;
-            }
-            else
-            {
-                _elementWidth = position.width;
-            }
-            
-            using (new GUI.GroupScope(rect))
-            using (new GUILayout.AreaScope(position))
-            using (new GUILayout.HorizontalScope())
-            {
-                var element = _list.serializedProperty.GetArrayElementAtIndex(index);
-                if (DrawElement != null)
+                var pos = new Rect(rect)
                 {
-                    DrawElement(element);
-                }
+                    y = rect.y + EditorGUIUtility.standardVerticalSpacing + (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * i,
+                    height = EditorGUIUtility.singleLineHeight
+                };
 
-                GUILayout.Space(3.0f);
+                DrawElementLine(i, pos, property);
             }
         }
 
@@ -128,9 +111,7 @@ namespace Bindings
 
         public void Draw(Rect position)
         {
-            //EditorGUILayout.Separator();
             _list.DoList(position);
-            //EditorGUILayout.Separator();
         }
 
         public void DrawLayout()

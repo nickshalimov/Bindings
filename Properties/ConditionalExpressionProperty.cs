@@ -1,7 +1,7 @@
 ﻿using Bindings.Streams;
 using UnityEngine;
 
-namespace Bindings.Expressions
+namespace Bindings.Properties
 {
     public enum Condition
     {
@@ -10,7 +10,7 @@ namespace Bindings.Expressions
     }
 
     [System.Serializable]
-    public sealed class ConditionalExpression: IStream, IValueReader<bool>
+    public sealed class ConditionalExpressionProperty: Property, IValueReader<bool>
     {
         [SerializeField] private ValueStream _stream;
 
@@ -22,30 +22,6 @@ namespace Bindings.Expressions
         [SerializeField] private string _string;
         [SerializeField] private ValueStream _otherStream;
 
-        public event System.Action Next
-        {
-            add
-            {
-                if (_next == null)
-                {
-                    Bind();
-                }
-
-                _next += value;
-            }
-
-            remove
-            {
-                _next -= value;
-
-                if (_next == null)
-                {
-                    Unbind();
-                }
-            }
-        }
-
-        private event System.Action _next;
         private bool _value;
 
         public bool GetValue()
@@ -53,7 +29,7 @@ namespace Bindings.Expressions
             return _value;
         }
 
-        private void Bind()
+        protected override void OnBind()
         {
             if (_stream == null)
             {
@@ -70,7 +46,7 @@ namespace Bindings.Expressions
             OnNext();
         }
 
-        private void Unbind()
+        protected override void OnUnbind()
         {
             if (_stream != null)
             {
@@ -91,10 +67,7 @@ namespace Bindings.Expressions
             }
 
             _value = !_value;
-            if (_next != null)
-            {
-                _next();
-            }
+            NotifyNext();
         }
 
         private bool Evaluate()

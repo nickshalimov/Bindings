@@ -1,11 +1,11 @@
-﻿using Bindings.Expressions;
+﻿using Bindings.Properties;
 using UnityEngine;
 
 namespace Bindings.Streams
 {
     public class ConditionalStream: BooleanStream
     {
-        [SerializeField] private ConditionalExpression[] _conditions = {};
+        [SerializeField] private ConditionalExpressionProperty[] _conditions = {};
         [SerializeField] private bool _any;
 
         private void OnEnable()

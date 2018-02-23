@@ -1,11 +1,12 @@
-﻿using Bindings.Text;
+﻿using Bindings.Properties;
+using Bindings.Text;
 using UnityEngine;
 
 namespace Bindings.Streams
 {
     public class StringFormatStream: StringStream
     {
-        [SerializeField] private TupleStream _values;
+        [SerializeField] private TupleProperty _values;
 
         private IFormatProvider _formatProvider;
 

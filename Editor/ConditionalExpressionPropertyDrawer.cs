@@ -1,12 +1,12 @@
-﻿using Bindings.Expressions;
+﻿using Bindings.Properties;
 using Bindings.Streams;
 using UnityEditor;
 using UnityEngine;
 
 namespace Bindings
 {
-    [CustomPropertyDrawer(typeof(ConditionalExpression))]
-    public class ConditionalExpressionDrawer: PropertyDrawer
+    [CustomPropertyDrawer(typeof(ConditionalExpressionProperty))]
+    public class ConditionalExpressionPropertyDrawer: PropertyDrawer
     {
         private const float ConditionWidth = 70.0f;
 
