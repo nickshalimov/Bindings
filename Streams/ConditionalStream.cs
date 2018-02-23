@@ -5,37 +5,22 @@ namespace Bindings.Streams
 {
     public class ConditionalStream: BooleanStream
     {
-        [SerializeField] private ConditionalExpressionProperty[] _conditions = {};
-        [SerializeField] private bool _any;
+        [SerializeField] private ConditionalProperty _conditions;
 
         private void OnEnable()
         {
-            for (int i = 0, count = _conditions.Length; i < count; ++i)
-            {
-                _conditions[i].Next += OnNext;
-            }
-
-            OnNext();
+            _conditions.Next += NotifyNext;
+            NotifyNext();
         }
 
         private void OnDisable()
         {
-            for (int i = 0, count = _conditions.Length; i < count; ++i)
-            {
-                _conditions[i].Next -= OnNext;
-            }
+            _conditions.Next -= NotifyNext;
         }
 
-        private bool Evaluate()
+        public override bool GetValue()
         {
-            return _any
-                ? System.Array.Exists(_conditions, c => c.GetValue()) 
-                : System.Array.TrueForAll(_conditions, c => c.GetValue());
-        }
-
-        private void OnNext()
-        {
-            UpdateValue(Evaluate());
+            return _conditions.GetValue();
         }
     }
 }

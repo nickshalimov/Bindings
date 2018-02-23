@@ -8,6 +8,7 @@ namespace Bindings.Streams
     {
         [SerializeField] private TupleProperty _values;
 
+        private string _value;
         private IFormatProvider _formatProvider;
 
         private void Awake()
@@ -32,7 +33,16 @@ namespace Bindings.Streams
                 ? _formatProvider.Format(_values.ConvertAll(s => s.ToString()))
                 : string.Empty;
 
-            UpdateValue(value);
+            if (value != _value)
+            {
+                _value = value;
+                NotifyNext();
+            }
+        }
+
+        public override string GetValue()
+        {
+            return _value;
         }
     }
 }

@@ -1,33 +1,12 @@
-﻿using UnityEngine;
-
-namespace Bindings.Streams
+﻿namespace Bindings.Streams
 {
-    public class BooleanStream: ValueStream, IValueReaderStream<bool>
+    public abstract class BooleanStream: ValueStream, IValueReader<bool>
     {
-        [SerializeField] private bool _value;
+        public abstract bool GetValue();
 
-        public bool GetValue()
-        {
-            return _value;
-        }
-
-        protected void UpdateValue(bool value)
-        {
-            if (_value != value)
-            {
-                _value = value;
-                NotifyNext();
-            }
-        }
-        
         public override string ToString()
         {
-            return _value.ToString();
-        }
-
-        private void OnValidate()
-        {
-            NotifyNext();
+            return GetValue().ToString();
         }
     }
 }

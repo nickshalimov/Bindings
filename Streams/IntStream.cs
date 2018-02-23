@@ -1,33 +1,12 @@
-﻿using UnityEngine;
-
-namespace Bindings.Streams
+﻿namespace Bindings.Streams
 {
-    public class IntStream: ValueStream, IValueReaderStream<int>
+    public abstract class IntStream: ValueStream, IValueReader<int>
     {
-        [SerializeField] private int _value;
-
-        public int GetValue()
-        {
-            return _value;
-        }
-        
-        protected void UpdateValue(int value)
-        {
-            if (_value != value)
-            {
-                _value = value;
-                NotifyNext();
-            }
-        }
+        public abstract int GetValue();
 
         public override string ToString()
         {
-            return _value.ToString();
-        }
-
-        private void OnValidate()
-        {
-            NotifyNext();
+            return GetValue().ToString();
         }
     }
 }

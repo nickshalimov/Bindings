@@ -11,7 +11,7 @@ namespace Bindings.Applicators.UI
         protected override void BindProperties()
         {
             var textField = GetComponent<UnityEngine.UI.Text>();
-            BindProperty(_text, v => textField.text = v);
+            BindProperty(_text, () => textField.text = _text.GetValue());
         }
     }
 }

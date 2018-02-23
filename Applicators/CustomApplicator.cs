@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using Bindings.Properties;
 
 namespace Bindings.Applicators
 {
     public abstract class CustomApplicator: Applicator
     {
-        private List<IPropertyApplicator> _properties;
+        private List<PropertyApplicator> _properties;
 
         private void Awake()
         {
-            _properties = new List<IPropertyApplicator>();
+            _properties = new List<PropertyApplicator>();
             BindProperties();
         }
 
@@ -17,9 +18,24 @@ namespace Bindings.Applicators
             _properties.Clear();
         }
 
-        protected void BindProperty<T>(IValueReaderStream<T> source, System.Action<T> action)
+        protected void BindProperty(IStream source, System.Action action)
         {
-            _properties.Add(new PropertyApplicator<T>(source, action));
+            if (source == null)
+            {
+                return;
+            }
+
+            _properties.Add(new PropertyApplicator(source, action));
+        }
+
+        protected void BindProperty(ConditionalProperty source, System.Action action)
+        {
+            if (source.IsEmpty())
+            {
+                return;
+            }
+
+            _properties.Add(new PropertyApplicator(source, action));
         }
 
         protected abstract void BindProperties();
@@ -40,18 +56,12 @@ namespace Bindings.Applicators
             }
         }
 
-        private interface IPropertyApplicator
+        private class PropertyApplicator
         {
-            void Bind();
-            void Unbind();
-        }
+            private readonly IStream _source;
+            private readonly System.Action _action;
 
-        private class PropertyApplicator<T>: IPropertyApplicator
-        {
-            private readonly IValueReaderStream<T> _source;
-            private readonly System.Action<T> _action;
-
-            public PropertyApplicator(IValueReaderStream<T> source, System.Action<T> action)
+            public PropertyApplicator(IStream source, System.Action action)
             {
                 _source = source;
                 _action = action;
@@ -61,17 +71,17 @@ namespace Bindings.Applicators
             {
                 if (_action != null && _source != null)
                 {
-                    _action(_source.GetValue());
+                    _action();
                 }
             }
 
-            void IPropertyApplicator.Bind()
+            public void Bind()
             {
                 _source.Next += Apply;
                 Apply();
             }
 
-            void IPropertyApplicator.Unbind()
+            public void Unbind()
             {
                 _source.Next -= Apply;
             }

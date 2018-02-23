@@ -11,7 +11,12 @@ namespace Bindings.Applicators.UI
         protected override void BindProperties()
         {
             var selectable = GetComponent<Selectable>();
-            BindProperty(_interactable, v => selectable.interactable = v);
+            if (selectable == null)
+            {
+                return;
+            }
+
+            BindProperty(_interactable, () => selectable.interactable = _interactable.GetValue());
         }
     }
 }

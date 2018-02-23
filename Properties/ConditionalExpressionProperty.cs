@@ -10,7 +10,7 @@ namespace Bindings.Properties
     }
 
     [System.Serializable]
-    public sealed class ConditionalExpressionProperty: Property, IValueReaderStream<bool>
+    public sealed class ConditionalExpressionProperty: Property, IValueReader<bool>
     {
         [SerializeField] private ValueStream _stream;
 

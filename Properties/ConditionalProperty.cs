@@ -3,7 +3,7 @@
 namespace Bindings.Properties
 {
     [System.Serializable]
-    public class ConditionalProperty: Property, IValueReaderStream<bool>
+    public class ConditionalProperty: Property, IValueReader<bool>
     {
         [SerializeField] private ConditionalExpressionProperty[] _expressions = {};
         [SerializeField] private bool _any;
@@ -13,6 +13,11 @@ namespace Bindings.Properties
         public bool GetValue()
         {
             return _value;
+        }
+
+        public bool IsEmpty()
+        {
+            return _expressions.Length == 0;
         }
 
         protected override void Bind()

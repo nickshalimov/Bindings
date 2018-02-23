@@ -17,8 +17,8 @@ namespace Bindings.Applicators.UI
                 return;
             }
 
-            BindProperty(_alpha, v => canvasGroup.alpha = v);
-            BindProperty(_interactable, v => canvasGroup.interactable = v);
+            BindProperty(_alpha, () => canvasGroup.alpha = _alpha.GetValue());
+            BindProperty(_interactable, () => canvasGroup.interactable = _interactable.GetValue());
         }
     }
 }

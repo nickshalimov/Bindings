@@ -17,7 +17,7 @@ namespace Bindings
 
             var streams = new List<Component>(components);
             var names = streams.ConvertAll(
-                c => new GUIContent(string.Format("{0} [{1}]", (c as Stream).Name, c.name))
+                c => new GUIContent(string.Format("{0} [{1}]", c is Stream ? (c as Stream).Name : "Null", c == null ? "" : c.name))
             );
 
             if (includeDefault)
