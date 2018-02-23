@@ -8,16 +8,24 @@ namespace Bindings
     {
         public delegate void DrawElementCallback(SerializedProperty element);
         public delegate void DrawElementLineCallback(int line, Rect position, SerializedProperty element);
+        public delegate void ChangedCallback();
 
         private readonly ReorderableList _list;
         private float _elementWidth;
         
         public event DrawElementCallback DrawElement;
         public event DrawElementCallback DrawHeader;
-        
-        public DrawElementLineCallback DrawElementLine;
 
+        public DrawElementLineCallback DrawElementLine;
+        public ChangedCallback Changed;
+
+        protected SerializedProperty _property;
         private int _linesCount = 1;
+
+        public SerializedProperty Property
+        {
+            get { return _property; }
+        }
 
         public int LinesCount
         {
@@ -31,8 +39,15 @@ namespace Bindings
             }
         }
 
+        public float Height
+        {
+            get { return _list.GetHeight(); }
+        }
+
         public ListProperty(SerializedProperty property)
         {
+            _property = property;
+
             _list = new ReorderableList(
                 property.serializedObject,
                 property,
@@ -41,12 +56,14 @@ namespace Bindings
 
             _list.drawHeaderCallback = OnDrawHeader;
             _list.drawElementCallback = OnDrawElement;
+            _list.onChangedCallback = OnChanged;
         }
 
         public void Destroy()
         {
             _list.drawHeaderCallback = null;
             _list.drawElementCallback = null;
+            _list.onChangedCallback = null;
             DrawElementLine = null;
         }
 
@@ -99,6 +116,21 @@ namespace Bindings
 
                 GUILayout.Space(3.0f);
             }
+        }
+
+        private void OnChanged(ReorderableList list)
+        {
+            if (Changed != null)
+            {
+                Changed();
+            }
+        }
+
+        public void Draw(Rect position)
+        {
+            //EditorGUILayout.Separator();
+            _list.DoList(position);
+            //EditorGUILayout.Separator();
         }
 
         public void DrawLayout()

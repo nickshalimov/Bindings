@@ -22,8 +22,30 @@ namespace Bindings.Expressions
         [SerializeField] private string _string;
         [SerializeField] private ValueStream _otherStream;
 
-        public event System.Action Next;
+        public event System.Action Next
+        {
+            add
+            {
+                if (_next == null)
+                {
+                    Bind();
+                }
 
+                _next += value;
+            }
+
+            remove
+            {
+                _next -= value;
+
+                if (_next == null)
+                {
+                    Unbind();
+                }
+            }
+        }
+
+        private event System.Action _next;
         private bool _value;
 
         public bool GetValue()
@@ -31,7 +53,7 @@ namespace Bindings.Expressions
             return _value;
         }
 
-        public void Bind()
+        private void Bind()
         {
             if (_stream == null)
             {
@@ -39,7 +61,7 @@ namespace Bindings.Expressions
             }
 
             _stream.Next += OnNext;
-            
+
             if (_otherStream != null)
             {
                 _otherStream.Next += OnNext;
@@ -48,7 +70,7 @@ namespace Bindings.Expressions
             OnNext();
         }
 
-        public void Unbind()
+        private void Unbind()
         {
             if (_stream != null)
             {
@@ -69,9 +91,9 @@ namespace Bindings.Expressions
             }
 
             _value = !_value;
-            if (Next != null)
+            if (_next != null)
             {
-                Next();
+                _next();
             }
         }
 
@@ -80,35 +102,41 @@ namespace Bindings.Expressions
             return _inverse ^ EvaluateDirect();
         }
 
+        private static T ExtractValue<T>(Stream stream, T fallback)
+        {
+            var reader = stream as IValueReader<T>;
+            return reader != null ? reader.GetValue() : fallback;
+        }
+
         private bool EvaluateDirect()
         {
-            if (_otherStream != null)
-            {
-                return _stream.EvaluateCondition(_condition, _otherStream);
-            }
-
-            var asBool = _stream as BooleanStream;
+            var asBool = _stream as IValueReader<bool>;
             if (asBool != null)
             {
+                //var value = ExtractValue(_otherStream, asBool.GetValue());
                 return asBool.GetValue();
             }
 
-            var asInt = _stream as IntStream;
+            var asInt = _stream as IValueReader<int>;
             if (asInt != null)
             {
-                return asInt.EvaluateCondition(_condition, _int);
+                var value = ExtractValue(_otherStream, _int);
+                return _condition == Condition.Equals && asInt.GetValue() == value
+                    || _condition == Condition.Greater && asInt.GetValue() > value;
             }
 
-            var asFloat = _stream as FloatStream;
+            var asFloat = _stream as IValueReader<float>;
             if (asFloat != null)
             {
-                return asFloat.EvaluateCondition(_condition, _float);
+                var value = ExtractValue(_otherStream, _float);
+                return _condition == Condition.Greater && asFloat.GetValue() > value;
             }
 
-            var asString = _stream as StringStream;
+            var asString = _stream as IValueReader<string>;
             if (asString != null)
             {
-                return asString.EvaluateCondition(_condition, _string);
+                var value = ExtractValue(_otherStream, _string);
+                return _condition == Condition.Equals && asString.GetValue() == value;
             }
 
             return false;

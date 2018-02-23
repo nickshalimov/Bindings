@@ -32,13 +32,11 @@ namespace Bindings.Applicators
             public void Bind()
             {
                 _expression.Next += OnNext;
-                _expression.Bind();
             }
 
             public void Unbind()
             {
                 _expression.Next -= OnNext;
-                _expression.Unbind();
             }
 
             private void OnNext()

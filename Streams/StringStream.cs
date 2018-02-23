@@ -1,5 +1,4 @@
-﻿using Bindings.Expressions;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Bindings.Streams
 {
@@ -24,17 +23,6 @@ namespace Bindings.Streams
         public override string ToString()
         {
             return _value;
-        }
-    
-        public bool EvaluateCondition(Condition condition, string value)
-        {
-            return condition == Condition.Equals && _value == value;
-        }
-
-        public override bool EvaluateCondition(Condition condition, ValueStream stream)
-        {
-            var asString = stream as IValueReader<string>;
-            return asString != null && EvaluateCondition(condition, asString.GetValue());
         }
 
         private void OnValidate()

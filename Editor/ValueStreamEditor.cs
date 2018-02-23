@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Bindings
 {
-    [CustomEditor(typeof(ValueStream), true)]
+    [CustomEditor(typeof(ValueStream))]
     public class ValueStreamEditor: Editor
     {
         public sealed override void OnInspectorGUI()

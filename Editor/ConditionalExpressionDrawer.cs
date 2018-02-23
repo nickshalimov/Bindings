@@ -16,7 +16,7 @@ namespace Bindings
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
+        { 
             using (new EditorGUI.PropertyScope(position, label, property))
             {
                 var templateRect = new Rect { y = position.y, height = position.height };

@@ -1,5 +1,4 @@
-﻿using Bindings.Expressions;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Bindings.Streams
 {
@@ -11,7 +10,7 @@ namespace Bindings.Streams
         {
             return _value;
         }
-        
+
         protected void UpdateValue(bool value)
         {
             if (_value != value)
@@ -24,17 +23,6 @@ namespace Bindings.Streams
         public override string ToString()
         {
             return _value.ToString();
-        }
-
-        public override bool EvaluateCondition(Condition condition, ValueStream stream)
-        {
-            var boolProperty = stream as IValueReader<bool>;
-            if (boolProperty != null)
-            {
-                return condition == Condition.Equals && _value == boolProperty.GetValue();
-            }
-
-            return false;
         }
 
         private void OnValidate()

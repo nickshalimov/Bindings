@@ -1,9 +1,8 @@
-﻿using Bindings.Expressions;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Bindings.Streams
 {
-    public class IntStream: ValueStream, IValueReader<int>, IValueReader<float>
+    public class IntStream: ValueStream, IValueReader<int>
     {
         [SerializeField] private int _value;
 
@@ -21,26 +20,9 @@ namespace Bindings.Streams
             }
         }
 
-        float IValueReader<float>.GetValue()
-        {
-            return _value;
-        }
-
         public override string ToString()
         {
             return _value.ToString();
-        }
-
-        public bool EvaluateCondition(Condition condition, int value)
-        {
-            return condition == Condition.Equals && _value == value
-                || condition == Condition.Greater && _value > value;
-        }
-
-        public override bool EvaluateCondition(Condition condition, ValueStream stream)
-        {
-            var asInt = stream as IValueReader<int>;
-            return asInt != null && EvaluateCondition(condition, asInt.GetValue());
         }
 
         private void OnValidate()

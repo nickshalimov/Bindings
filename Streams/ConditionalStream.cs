@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Bindings.Expressions;
+﻿using Bindings.Expressions;
 using UnityEngine;
 
 namespace Bindings.Streams
@@ -13,7 +12,6 @@ namespace Bindings.Streams
         {
             for (int i = 0, count = _conditions.Length; i < count; ++i)
             {
-                _conditions[i].Bind();
                 _conditions[i].Next += OnNext;
             }
 
@@ -25,7 +23,6 @@ namespace Bindings.Streams
             for (int i = 0, count = _conditions.Length; i < count; ++i)
             {
                 _conditions[i].Next -= OnNext;
-                _conditions[i].Unbind();
             }
         }
 

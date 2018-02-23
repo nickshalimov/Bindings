@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Bindings
 {
-    public struct StreamsProperty
+    public class StreamsProperty
     {
         private readonly Component[] _streams;
         private readonly GUIContent[] _names;
