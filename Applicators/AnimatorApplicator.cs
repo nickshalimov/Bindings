@@ -52,7 +52,7 @@ namespace Bindings.Applicators
                 switch (parameter.type)
                 {
                     case AnimatorControllerParameterType.Bool:
-                        var asBool = _stream as IValueReader<bool>;
+                        var asBool = _stream as IValueStream<bool>;
                         if (asBool != null)
                         {
                             _apply = () => animator.SetBool(nameHash, asBool.GetValue());
@@ -60,7 +60,7 @@ namespace Bindings.Applicators
                         break;
 
                     case AnimatorControllerParameterType.Int:
-                        var asInt = _stream as IValueReader<int>;
+                        var asInt = _stream as IValueStream<int>;
                         if (asInt != null)
                         {
                             _apply = () => animator.SetInteger(nameHash, asInt.GetValue());
@@ -68,7 +68,7 @@ namespace Bindings.Applicators
                         break;
 
                     case AnimatorControllerParameterType.Float:
-                        var asFloat = _stream as IValueReader<float>;
+                        var asFloat = _stream as IValueStream<float>;
                         if (asFloat != null)
                         {
                             _apply = () => animator.SetFloat(nameHash, asFloat.GetValue());

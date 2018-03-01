@@ -43,7 +43,7 @@ namespace Bindings.Triggers
 
         private void UpdateStream<T>(T value)
         {
-            var property = _stream as IValueWriter<T>;
+            var property = _stream as IMutableValueStream<T>;
             if (property != null)
             {
                 property.SetValue(value);

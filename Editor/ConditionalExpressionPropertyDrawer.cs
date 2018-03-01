@@ -62,13 +62,13 @@ namespace Bindings
                     var elementInverse = property.FindPropertyRelative("_inverse");
                     var elementCondition = property.FindPropertyRelative("_condition");
     
-                    if (stream is IValueReader<bool>)
+                    if (stream is IValueStream<bool>)
                     {
                         var options = new[] { "True", "False" };
                         var index = EditorGUI.Popup(conditionRect, elementInverse.boolValue ? 0 : 1, options);
                         elementInverse.boolValue = index == 0;
                     }
-                    else if (stream is IValueReader<int>)
+                    else if (stream is IValueStream<int>)
                     {
                         var options = new[] { "Equals", "Not Equals", "Greater", "Less" };
                         var index = (elementCondition.enumValueIndex << 1) + (elementInverse.boolValue ? 1 : 0);

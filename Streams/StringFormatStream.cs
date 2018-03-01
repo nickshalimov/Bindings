@@ -16,13 +16,12 @@ namespace Bindings.Streams
             _formatProvider = GetComponent<IFormatProvider>();
         }
 
-        private void OnEnable()
+        protected override void Bind()
         {
             _values.Next += OnNext;
-            OnNext();
         }
 
-        private void OnDisable()
+        protected override void Unbind()
         {
             _values.Next -= OnNext;
         }

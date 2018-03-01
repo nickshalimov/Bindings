@@ -7,13 +7,12 @@ namespace Bindings.Streams
     {
         [SerializeField] private ConditionalProperty _conditions;
 
-        private void OnEnable()
+        protected override void Bind()
         {
             _conditions.Next += NotifyNext;
-            NotifyNext();
         }
 
-        private void OnDisable()
+        protected override void Unbind()
         {
             _conditions.Next -= NotifyNext;
         }

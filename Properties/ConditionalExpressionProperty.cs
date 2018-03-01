@@ -10,7 +10,7 @@ namespace Bindings.Properties
     }
 
     [System.Serializable]
-    public sealed class ConditionalExpressionProperty: Property, IValueReader<bool>
+    public sealed class ConditionalExpressionProperty: Property, IValueStream<bool>
     {
         [SerializeField] private ValueStream _stream;
 
@@ -77,20 +77,20 @@ namespace Bindings.Properties
 
         private static T ExtractValue<T>(Stream stream, T fallback)
         {
-            var reader = stream as IValueReader<T>;
+            var reader = stream as IValueStream<T>;
             return reader != null ? reader.GetValue() : fallback;
         }
 
         private bool EvaluateDirect()
         {
-            var asBool = _stream as IValueReader<bool>;
+            var asBool = _stream as IValueStream<bool>;
             if (asBool != null)
             {
                 //var value = ExtractValue(_otherStream, asBool.GetValue());
                 return asBool.GetValue();
             }
 
-            var asInt = _stream as IValueReader<int>;
+            var asInt = _stream as IValueStream<int>;
             if (asInt != null)
             {
                 var value = ExtractValue(_otherStream, _int);
@@ -98,14 +98,14 @@ namespace Bindings.Properties
                     || _condition == Condition.Greater && asInt.GetValue() > value;
             }
 
-            var asFloat = _stream as IValueReader<float>;
+            var asFloat = _stream as IValueStream<float>;
             if (asFloat != null)
             {
                 var value = ExtractValue(_otherStream, _float);
                 return _condition == Condition.Greater && asFloat.GetValue() > value;
             }
 
-            var asString = _stream as IValueReader<string>;
+            var asString = _stream as IValueStream<string>;
             if (asString != null)
             {
                 var value = ExtractValue(_otherStream, _string);

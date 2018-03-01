@@ -6,19 +6,21 @@
         {
             add
             {
-                if (_next == null)
+                var bound = _next == null;
+                _next += value;
+
+                if (!bound && _next != null)
                 {
                     Bind();
                 }
-
-                _next += value;
             }
 
             remove
             {
+                var bound = _next != null;
                 _next -= value;
 
-                if (_next == null)
+                if (bound && _next == null)
                 {
                     Unbind();
                 }

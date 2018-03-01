@@ -4,13 +4,13 @@ namespace Bindings.Streams
 {
     public class Stream: MonoBehaviour, IStream
     {
-        [SerializeField] private string _name;
+        [SerializeField] private string _id;
 
         public event System.Action Next;
 
-        public string Name
+        public string Id
         {
-            get { return _name; }
+            get { return _id; }
         }
 
         protected void NotifyNext()

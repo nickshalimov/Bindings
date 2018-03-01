@@ -1,25 +1,47 @@
-﻿using UnityEngine;
+﻿using Bindings.Objects;
+using UnityEngine;
 
 namespace Bindings.Streams
 {
-    public sealed class MutableBooleanStream: BooleanStream, IValueWriter<bool>
+    public sealed class MutableBooleanStream: BooleanStream, IMutableValueStream<bool>
     {
+        [SerializeField] private BooleanObject _reference;
         [SerializeField] private bool _value;
+
+        protected override void Bind()
+        {
+            if (_reference != null)
+            {
+                _reference.Next += NotifyNext;
+            }
+
+            NotifyNext();
+        }
+
+        protected override void Unbind()
+        {
+            if (_reference != null)
+            {
+                _reference.Next -= NotifyNext;
+            }
+        }
 
         public override bool GetValue()
         {
-            return _value;
+            return _reference != null ? _reference.GetValue() : _value;
         }
 
         public void SetValue(bool value)
         {
-            if (value == _value)
+            if (_reference != null)
             {
-                return;
+                _reference.SetValue(value);
             }
-
-            _value = value;
-            NotifyNext();
+            else if (_value != value)
+            {
+                _value = value;
+                NotifyNext();
+            }
         }
     }
 }
